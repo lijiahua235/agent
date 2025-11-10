@@ -1,5 +1,4 @@
 import streamlit as st
-from backend.app import llm
 import requests
 
 st.set_page_config(page_title="ChatGPT Demo", page_icon="🤖")
