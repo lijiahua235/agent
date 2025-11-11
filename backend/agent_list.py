@@ -20,7 +20,7 @@ with open('config/SystemPrompt.json', 'r') as prompt_file:
 
 checkpointer = InMemorySaver()
 
-#配置错误管理
+#config error management
 @wrap_tool_call
 def handle_tool_errors(request, handler):
     """Handle tool execution errors with custom messages."""
@@ -33,7 +33,7 @@ def handle_tool_errors(request, handler):
             tool_call_id=request.tool_call["id"]
         )
 
-# 创建自己的模型实例
+# create an Object of LLM
 llm = ChatOpenAI(
     model=API_list['SILICONFLOW']['Qwen3-8B'],
     base_url=API_list['SILICONFLOW']['BASE_URL'],
@@ -45,7 +45,7 @@ llm = ChatOpenAI(
 
 welcome_agent = create_agent(
                                 model=llm,
-                                # checkpointer=checkpointer,
+                                checkpointer=checkpointer,
                                 tools=[get_weather, update_user_info, greet],
                                 system_prompt=system_prompt['Welcome_Agent'],
                                 state_schema=CustomState,

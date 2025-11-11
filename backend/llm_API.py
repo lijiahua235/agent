@@ -18,17 +18,15 @@ def chat():
     if not user_input:
         return jsonify({"error": "message is required"}), 400
 
-    # 调用模型
+    # call llm
     def generate():
         for stream_mode, chunk in welcome_agent.stream(
                 {"messages": [{"role": "user", "content": f'{user_input}'}]},
                 context=CustomContext(user_id="1"),
+                config={"configurable": {"thread_id": "1"}},
                 stream_mode=["messages", "custom","updates"],
-                # thread_id="1",
-                # checkpoint_ns="chat",
-                # checkpoint_id="session_001"
         ):
-            if stream_mode == "updates":
+            if stream_mode in ["updates","custom"]:
                 print(f"stream_mode: {stream_mode}")
                 print(f"content: {chunk}")
                 print("\n")
@@ -36,10 +34,13 @@ def chat():
             elif stream_mode == "messages":
                 chunk_message, metadata = chunk
                 text = chunk_message.content
-                if text != '':
-                    print(f'AI is typing: {text}')
+                if text.strip() != '':
+                    print(f'AI is typing: {text}\n')
                     yield f"data: {json.dumps({'reply': text})}\n\n"
         yield "data: [DONE]\n\n"
+
+    #[11/Nov/2025 16:53:17] "POST /chat HTTP/1.1" 200 - only means the header of response is sent, later on the output
+    #will send streamly
 
     return Response(generate(), content_type="text/event-stream")
 

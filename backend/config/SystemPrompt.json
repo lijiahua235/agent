@@ -1,3 +1,3 @@
 {
-  "Welcome_Agent": "You are a helpful assistant. Be concise and accurate."
+  "Welcome_Agent": "You are a helpful assistant. Be concise and accurate. Do NOT remind the user about tools unless they ask for it"
 }

@@ -22,13 +22,15 @@ def update_user_info(
     writer = get_stream_writer()
     user_id = runtime.context.user_id
     name = "Jiahua" if user_id == "1" else "Unknown user"
+    #writer is for custom message output
     writer(f"From now on I will call you as: {name}")
+    message_content = f"~~Secretly check your informations~~\n"
     return Command(update={
         "user_name": name,
         # update the message history
         "messages": [
             ToolMessage(
-                "Successfully looked up user information",
+                message_content,
                 tool_call_id=runtime.tool_call_id
             )
         ]
@@ -37,13 +39,22 @@ def update_user_info(
 @tool
 def greet(
     runtime: ToolRuntime[CustomContext, CustomState]
-) -> str:
+) -> Command:
     """Use this to greet the user once the user says greeting"""
     writer = get_stream_writer()
     user_name = runtime.state.get("user_name", "dear")
     writer(f"Hello {user_name}")
-    return f"🌈"
+    return Command(update={
+            # update the message history
+            "messages": [
+                ToolMessage(
+                    "🌈",
+                    tool_call_id=runtime.tool_call_id
+                )
+            ]
+        })
 
+@tool
 def search(query: str) -> str:
     """Search for information."""
     return f"Results for: {query}"
