@@ -35,7 +35,7 @@ def handle_tool_errors(request, handler):
 
 # 创建自己的模型实例
 llm = ChatOpenAI(
-    model=API_list['SILICONFLOW']['MODEL_CAN_USE'],
+    model=API_list['SILICONFLOW']['Qwen3-8B'],
     base_url=API_list['SILICONFLOW']['BASE_URL'],
     api_key=API_list['SILICONFLOW']['API_KEY'],
     temperature=0.5,
@@ -45,7 +45,7 @@ llm = ChatOpenAI(
 
 welcome_agent = create_agent(
                                 model=llm,
-                                checkpointer=checkpointer,
+                                # checkpointer=checkpointer,
                                 tools=[get_weather, update_user_info, greet],
                                 system_prompt=system_prompt['Welcome_Agent'],
                                 state_schema=CustomState,
