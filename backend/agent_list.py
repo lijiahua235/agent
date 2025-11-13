@@ -3,7 +3,6 @@ from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import InMemorySaver
 from langchain.agents.middleware import wrap_tool_call
 from langchain_core.messages import ToolMessage
-import redis
 from tools.daily import CustomState, CustomContext, get_weather, update_user_info, greet
 import inspect
 import yaml
@@ -34,7 +33,7 @@ def handle_tool_errors(request, handler):
         )
 
 # create an Object of LLM
-llm = ChatOpenAI(
+qwen = ChatOpenAI(
     model=API_list['SILICONFLOW']['Qwen3-8B'],
     base_url=API_list['SILICONFLOW']['BASE_URL'],
     api_key=API_list['SILICONFLOW']['API_KEY'],
@@ -44,7 +43,7 @@ llm = ChatOpenAI(
 )
 
 welcome_agent = create_agent(
-                                model=llm,
+                                model=qwen,
                                 checkpointer=checkpointer,
                                 tools=[get_weather, update_user_info, greet],
                                 system_prompt=system_prompt['Welcome_Agent'],

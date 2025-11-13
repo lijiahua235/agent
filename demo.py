@@ -1,5 +1,6 @@
 import streamlit as st
 import requests
+import uuid
 import time
 import json
 
@@ -12,6 +13,9 @@ if "history" not in st.session_state:
 
 if "stop_flag" not in st.session_state:
     st.session_state.stop_flag = False
+
+if "thread_id" not in st.session_state:
+    st.session_state["thread_id"] = str(uuid.uuid4())
 
 FINAL_OUTPUT_FOR_EACH_QUERY = []
 
@@ -35,6 +39,7 @@ def stream_output(res,delay=0.02):
 with st.sidebar:
     if st.button("start new conversation"):
         st.session_state.history.clear()
+        st.session_state.pop("thread_id", None)
     st.write("chat")
     # if st.session_state.history:
 
@@ -49,6 +54,7 @@ if len(st.session_state.history) != 0:
 #user input
 if user_input := st.chat_input("Say something"):
     print(f'start querying')
+    print(f"thread_id:{st.session_state["thread_id"]}")
     st.session_state.history.append({"role": "user", "content": user_input})
     FINAL_OUTPUT_FOR_EACH_QUERY.clear()
     st.chat_message("user").write(user_input)
@@ -56,7 +62,7 @@ if user_input := st.chat_input("Say something"):
     with st.spinner("AI is typing..."):
         with requests.post(
             "http://localhost:10000/chat",
-            json={"message": user_input},
+            json={"message": user_input, "thread_id": st.session_state["thread_id"]},
             stream=True
         ) as response:
             if response.status_code == 200:
