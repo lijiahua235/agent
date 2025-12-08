@@ -59,7 +59,7 @@ if user_input := st.chat_input("Say something"):
     FINAL_OUTPUT_FOR_EACH_QUERY.clear()
     st.chat_message("user").write(user_input)
     #streaming
-    with st.spinner("AI is typing..."):
+    with st.spinner("AI is typing...",show_time=True):
         with requests.post(
             "http://localhost:10000/chat",
             json={"message": user_input, "thread_id": st.session_state["thread_id"]},

@@ -62,4 +62,5 @@ def search(query: str) -> str:
 @tool
 def get_weather(location: str) -> str:
     """Get weather information for a location."""
+
     return f"Weather in {location}: Sunny, 72°F"
